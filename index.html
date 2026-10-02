@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>happy birthday to cutest princess</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Parisienne&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white: #ffffff;
+    --blush-50:  #fff8fb;
+    --blush-100: #ffeef5;
+    --pink-100:  #ffd7e9;
+    --pink-200:  #ffb8dc;
+    --pink-400:  #ff74b6;
+    --pink-500:  #ff2f96;
+    --pink-600:  #e6007a;
+    --pink-700:  #b8005f;
+    --ink:       #6a1240;
+    --ink-soft:  #9a4a72;
+  }
+
+  *{ box-sizing: border-box; }
+
+  html, body{
+    margin:0;
+    min-height:100%;
+  }
+
+  body{
+    font-family:'Cormorant Garamond', serif;
+    color: var(--ink);
+    background:
+      radial-gradient(60% 45% at 12% 8%,  var(--pink-100) 0%, transparent 60%),
+      radial-gradient(55% 40% at 90% 15%, var(--pink-100) 0%, transparent 60%),
+      radial-gradient(70% 55% at 50% 100%, var(--blush-100) 0%, transparent 60%),
+      var(--blush-50);
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    overflow-x:hidden;
+    position:relative;
+    padding: 24px;
+  }
+
+  /* ---------- ambient floating hearts ---------- */
+  .atmosphere{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    overflow:hidden;
+    z-index:0;
+  }
+  .heart-particle{
+    position:absolute;
+    bottom:-40px;
+    opacity:0.18;
+    color: var(--pink-400);
+    animation-name: drift-up;
+    animation-timing-function: ease-in;
+    animation-iteration-count: infinite;
+  }
+  @keyframes drift-up{
+    0%   { transform: translateY(0) translateX(0) rotate(0deg); opacity:0; }
+    10%  { opacity: 0.22; }
+    90%  { opacity: 0.15; }
+    100% { transform: translateY(-110vh) translateX(20px) rotate(25deg); opacity:0; }
+  }
+
+  main{ position:relative; z-index:1; width:100%; display:flex; justify-content:center; }
+
+  .scene{ display:flex; flex-direction:column; align-items:center; }
+  .scene[hidden]{ display:none; }
+
+  /* ---------- envelope ---------- */
+  .envelope-wrap{
+    width:min(360px, 84vw);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:22px;
+  }
+
+  .envelope{
+    position:relative;
+    width:100%;
+    aspect-ratio: 3 / 2;
+    cursor:pointer;
+    perspective: 1200px;
+    animation: bob 4.5s ease-in-out infinite;
+  }
+  @keyframes bob{
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-8px); }
+  }
+  .envelope:focus-visible{ outline: 3px solid var(--pink-600); outline-offset: 6px; border-radius: 10px; }
+
+  .env-back{
+    position:absolute; inset:0;
+    background: linear-gradient(160deg, var(--white) 0%, var(--pink-100) 100%);
+    border-radius:10px;
+    box-shadow:
+      0 24px 40px -18px rgba(230,0,122,0.45),
+      0 4px 10px rgba(230,0,122,0.15);
+    overflow:hidden;
+  }
+  .env-back::before, .env-back::after{
+    content:'';
+    position:absolute;
+    bottom:-2px;
+    width:60%;
+    height:75%;
+    background: linear-gradient(135deg, transparent 48%, rgba(230,0,122,0.10) 50%);
+  }
+  .env-back::before{ left:-5%; }
+  .env-back::after{ right:-5%; transform: scaleX(-1); }
+
+  .env-flap{
+    position:absolute;
+    top:0; left:0;
+    width:100%; height:56%;
+    background: linear-gradient(160deg, var(--pink-400), var(--pink-600));
+    clip-path: polygon(0 0, 100% 0, 50% 92%);
+    transform-origin: top center;
+    transform: rotateX(0deg);
+    transition: transform 0.85s cubic-bezier(.62,.03,.3,1);
+    z-index:3;
+    box-shadow: 0 6px 14px rgba(184,0,95,0.25);
+  }
+
+  .letter-peek{
+    position:absolute;
+    bottom:6%;
+    left:50%;
+    transform: translate(-50%, 0);
+    width:82%;
+    height:16%;
+    background: var(--white);
+    border-radius: 4px 4px 0 0;
+    box-shadow: 0 -2px 6px rgba(184,0,95,0.12);
+    opacity:0;
+    z-index:2;
+    transition: transform 0.7s ease 0.3s, opacity 0.25s ease 0.3s;
+  }
+
+  .wax-seal{
+    position:absolute;
+    top:40%; left:50%;
+    transform: translate(-50%,-50%);
+    width:58px; height:58px;
+    border-radius:50%;
+    background: radial-gradient(circle at 35% 30%, var(--pink-400), var(--pink-700) 75%);
+    box-shadow: 0 6px 12px rgba(184,0,95,0.4), inset 0 2px 3px rgba(255,255,255,0.35);
+    display:flex; align-items:center; justify-content:center;
+    z-index:4;
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .wax-seal svg{ width:24px; height:24px; }
+
+  .envelope.is-open .env-flap{ transform: rotateX(180deg); }
+  .envelope.is-open .letter-peek{ opacity:1; transform: translate(-50%, -160%); }
+  .envelope.is-open .wax-seal{ opacity:0; transform: translate(-50%,-50%) scale(0.6); }
+
+  .hint{
+    margin:0;
+    font-size: 1.05rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    font-family: 'Cormorant Garamond', serif;
+  }
+
+  /* ---------- letter ---------- */
+  .letter-scene{ width:100%; display:flex; flex-direction:column; align-items:center; gap:20px; }
+
+  .letter-paper{
+    position:relative;
+    width:min(620px, 92vw);
+    background: linear-gradient(180deg, var(--white), var(--blush-100));
+    border-radius: 10px;
+    padding: clamp(28px, 6vw, 56px) clamp(24px, 7vw, 64px);
+    box-shadow:
+      0 30px 60px -24px rgba(230,0,122,0.35),
+      0 2px 8px rgba(230,0,122,0.12);
+    animation: rise-in 0.8s ease both;
+  }
+  @keyframes rise-in{
+    from{ opacity:0; transform: translateY(24px) scale(0.98); }
+    to  { opacity:1; transform: translateY(0) scale(1); }
+  }
+  .letter-paper::before{
+    content:'';
+    position:absolute;
+    left: clamp(18px, 6vw, 40px);
+    top:0; bottom:0;
+    width:1px;
+    background: rgba(255,47,150,0.18);
+  }
+
+  .eyebrow{
+    margin:0 0 6px;
+    font-size:0.82rem;
+    letter-spacing:0.32em;
+    text-transform:uppercase;
+    color: var(--pink-600);
+    font-weight:600;
+  }
+
+  .headline{
+    margin:0 0 18px;
+    font-family:'Parisienne', cursive;
+    font-size: clamp(2rem, 6vw, 2.8rem);
+    color: var(--pink-600);
+    line-height:1;
+  }
+
+  .salutation{
+    font-size: clamp(1.3rem, 3.4vw, 1.6rem);
+    font-style: italic;
+    margin: 0 0 20px;
+  }
+  .placeholder{
+    color: var(--pink-600);
+    border-bottom: 1px dashed var(--pink-400);
+    padding-bottom: 1px;
+  }
+
+  .letter-body p{
+    font-size: clamp(1.08rem, 2.4vw, 1.25rem);
+    line-height:1.75;
+    margin: 0 0 18px;
+  }
+
+  .flourish{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin: 26px 0;
+    color: var(--pink-400);
+  }
+  .flourish::before, .flourish::after{
+    content:'';
+    flex:1;
+    height:1px;
+    background: linear-gradient(90deg, transparent, var(--pink-200), transparent);
+  }
+
+  .signoff{ margin: 0; font-size:1.1rem; font-style:italic; color: var(--ink-soft); }
+  .signature{
+    margin: 4px 0 0;
+    font-family:'Parisienne', cursive;
+    font-size: clamp(1.8rem, 5vw, 2.4rem);
+    color: var(--pink-600);
+  }
+
+  .date-stamp{
+    margin-top: 26px;
+    font-size: 0.85rem;
+    letter-spacing: 0.06em;
+    color: var(--ink-soft);
+    text-align:right;
+  }
+
+  .close-btn{
+    font-family:'Cormorant Garamond', serif;
+    font-size:1rem;
+    letter-spacing:0.06em;
+    color: var(--pink-600);
+    background: var(--white);
+    border: 1px solid var(--pink-200);
+    padding: 10px 22px;
+    border-radius: 999px;
+    cursor:pointer;
+    box-shadow: 0 6px 16px -8px rgba(230,0,122,0.35);
+    transition: background 0.2s ease, transform 0.2s ease, color 0.2s ease;
+  }
+  .close-btn:hover{ background: var(--pink-600); color: var(--white); transform: translateY(-1px); }
+  .close-btn:focus-visible{ outline: 3px solid var(--pink-600); outline-offset: 3px; }
+
+  /* ---------- sound toggle ---------- */
+  .sound-toggle{
+    position: fixed;
+    top: 18px;
+    right: 18px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 1px solid var(--pink-200);
+    box-shadow: 0 6px 16px -8px rgba(230,0,122,0.4);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    cursor:pointer;
+    z-index: 10;
+    transition: transform 0.2s ease, background 0.2s ease;
+  }
+  .sound-toggle:hover{ transform: translateY(-1px) scale(1.04); }
+  .sound-toggle:focus-visible{ outline: 3px solid var(--pink-600); outline-offset: 3px; }
+  .sound-toggle svg{ width:20px; height:20px; }
+  .sound-toggle .icon-on{ display:block; }
+  .sound-toggle .icon-off{ display:none; }
+  .sound-toggle.is-muted .icon-on{ display:none; }
+  .sound-toggle.is-muted .icon-off{ display:block; }
+
+  @media (prefers-reduced-motion: reduce){
+    *, *::before, *::after{
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+</style>
+</head>
+<body>
+
+  <div class="atmosphere" id="atmosphere" aria-hidden="true"></div>
+
+  <main>
+    <!-- Envelope scene -->
+    <section class="scene" id="envelope-scene">
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope" role="button" tabindex="0" aria-label="Open the love letter">
+          <div class="env-back"></div>
+          <div class="letter-peek"></div>
+          <div class="env-flap"></div>
+          <div class="wax-seal">
+            <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M12 21s-7.5-4.6-10.1-9.2C0.4 8.9 1.7 5.5 4.8 4.6c2-.6 4 .2 5.2 2 .3.4.7.4 1 0 1.2-1.8 3.2-2.6 5.2-2 3.1.9 4.4 4.3 2.9 7.2C19.5 16.4 12 21 12 21z" fill="#fff"/>
+            </svg>
+          </div>
+        </div>
+        <p class="hint">click  on my ass (the heart)</p>
+      </div>
+    </section>
+
+    <!-- Letter scene -->
+    <section class="scene letter-scene" id="letter-scene" hidden>
+      <article class="letter-paper">
+        <p class="eyebrow">Happy birthday roya</p>
+        <h1 class="headline">Princess Roya</h1>
+        <p class="salutation">Sweetest <span class="placeholder">[Roya]</span>,</p>
+
+        <div class="letter-body">
+          <p>you have grown up a year, became, prettier, cuter, sweeter, and more lovlier.</p>
+
+          <p> I hope you know. That your <span class="placeholder">[ cuteness, lovliness, prettiness, funniness, kindness and your hardworking]</span>. How you push yourself forward, the way you keep going, it proves you are so strong</p>
+
+          <p>  you should be proud of yourself, </p>
+
+          <p> You are going to be where you want to be, you will do what you love, you will eat everything you want, you will live the way you want, everything will come to you. i promise</p>
+        </div>
+
+        <div class="flourish" aria-hidden="true">♡</div>
+
+        <p class="signoff">Mit freundlichen Grüßen,</p>
+        <p class="signature">[Mohammmad]</p>
+
+        <p class="date-stamp" id="date-stamp"></p>
+      </article>
+
+      <button class="close-btn" id="close-btn">↺ 😡💗</button>
+
+      <audio id="love-song" src="song.mp3" preload="auto"></audio>
+      <button class="sound-toggle" id="sound-toggle" aria-label="Mute the song" title="Mute the song">
+        <svg class="icon-on" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 9v6h4l5 4V5L8 9H4z" fill="#e6007a"/>
+          <path d="M16.5 8.5a5 5 0 0 1 0 7" stroke="#e6007a" stroke-width="1.6" stroke-linecap="round"/>
+          <path d="M18.8 6a8 8 0 0 1 0 12" stroke="#e6007a" stroke-width="1.6" stroke-linecap="round" opacity="0.5"/>
+        </svg>
+        <svg class="icon-off" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 9v6h4l5 4V5L8 9H4z" fill="#e6007a"/>
+          <path d="M16 9l5 6M21 9l-5 6" stroke="#e6007a" stroke-width="1.6" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </section>
+  </main>
+
+<script>
+  const envelope = document.getElementById('envelope');
+  const envelopeScene = document.getElementById('envelope-scene');
+  const letterScene = document.getElementById('letter-scene');
+  const closeBtn = document.getElementById('close-btn');
+  const dateStamp = document.getElementById('date-stamp');
+  const song = document.getElementById('love-song');
+  const soundToggle = document.getElementById('sound-toggle');
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let songAvailable = true;
+
+  // If song.mp3 isn't sitting next to this HTML file, fail quietly and hide the toggle.
+  song.addEventListener('error', () => {
+    songAvailable = false;
+    soundToggle.style.display = 'none';
+  });
+
+  function openLetter(){
+    if (envelope.classList.contains('is-open')) return;
+    envelope.classList.add('is-open');
+
+    // Start the song right on the tap/keypress so the browser counts it as
+    // a user gesture and allows playback with sound.
+    if (songAvailable){
+      song.currentTime = 0;
+      song.play().catch(() => { /* playback blocked or file missing — toggle still works manually */ });
+    }
+
+    const delay = prefersReduced ? 50 : 950;
+    setTimeout(() => {
+      envelopeScene.hidden = true;
+      letterScene.hidden = false;
+    }, delay);
+  }
+
+  envelope.addEventListener('click', openLetter);
+  envelope.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' '){
+      e.preventDefault();
+      openLetter();
+    }
+  });
+
+  soundToggle.addEventListener('click', () => {
+    if (song.paused){
+      song.play().catch(() => {});
+      soundToggle.classList.remove('is-muted');
+      soundToggle.setAttribute('aria-label', 'Mute the song');
+    } else {
+      song.pause();
+      soundToggle.classList.add('is-muted');
+      soundToggle.setAttribute('aria-label', 'Play the song');
+    }
+  });
+
+  closeBtn.addEventListener('click', () => {
+    letterScene.hidden = true;
+    envelope.classList.remove('is-open');
+    envelopeScene.hidden = false;
+    song.pause();
+    song.currentTime = 0;
+    soundToggle.classList.remove('is-muted');
+  });
+
+  dateStamp.textContent = 'roya cutest princess everrrr ' ;
+
+  // ambient floating hearts
+  if (!prefersReduced){
+    const atmosphere = document.getElementById('atmosphere');
+    const count = window.innerWidth < 600 ? 10 : 16;
+    for (let i = 0; i < count; i++){
+      const heart = document.createElement('div');
+      heart.className = 'heart-particle';
+      heart.innerHTML = '<svg viewBox="0 0 24 24" width="1em" height="1em" fill="currentColor"><path d="M12 21s-7.5-4.6-10.1-9.2C0.4 8.9 1.7 5.5 4.8 4.6c2-.6 4 .2 5.2 2 .3.4.7.4 1 0 1.2-1.8 3.2-2.6 5.2-2 3.1.9 4.4 4.3 2.9 7.2C19.5 16.4 12 21 12 21z"/></svg>';
+      const size = 10 + Math.random() * 14;
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.fontSize = size + 'px';
+      heart.style.animationDuration = (14 + Math.random() * 12) + 's';
+      heart.style.animationDelay = (Math.random() * -20) + 's';
+      atmosphere.appendChild(heart);
+    }
+  }
+</script>
+</body>
+</html>
